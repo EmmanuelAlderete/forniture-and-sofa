@@ -6,26 +6,25 @@ import { Link, useNavigate } from "react-router-dom";
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [catalogOpen, setCatalogOpen] = useState(false);
-
   const catalogRef = useRef(null);
   const navigate = useNavigate();
 
-  // Ir a sección contacto en Home
+  // Ir a contacto en Home
   const goToContacto = () => {
-    navigate("/"); // ir al home
+    navigate("/");
     setTimeout(() => {
       const target = document.getElementById("contacto");
       if (target) target.scrollIntoView({ behavior: "smooth" });
     }, 200);
   };
 
-  // Cerrar dropdown al hacer click fuera
+  // Cerrar dropdown al click afuera
   useEffect(() => {
-    function handleClickOutside(e) {
+    const handleClickOutside = (e) => {
       if (catalogRef.current && !catalogRef.current.contains(e.target)) {
         setCatalogOpen(false);
       }
-    }
+    };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -41,13 +40,9 @@ export default function Header() {
             alt="logo"
             className="w-14 h-14 object-cover rounded-full shadow-sm"
           />
-          <motion.h1
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="text-xl font-semibold text-gray-800 tracking-tight"
-          >
+          <h1 className="text-xl font-semibold text-gray-800 tracking-tight">
             Forniture & Sofa
-          </motion.h1>
+          </h1>
         </Link>
 
         {/* NAV DESKTOP */}
@@ -55,7 +50,6 @@ export default function Header() {
           <Link to="/" className="hover:text-black transition">
             Home
           </Link>
-
           <button
             onClick={goToContacto}
             className="hover:text-black transition"
@@ -63,7 +57,7 @@ export default function Header() {
             Contacto
           </button>
 
-          {/* --- CATALOGO (AL FINAL) --- */}
+          {/* CATALOGO */}
           <div className="relative" ref={catalogRef}>
             <button
               onClick={() => setCatalogOpen(!catalogOpen)}
@@ -78,16 +72,16 @@ export default function Header() {
                   initial={{ opacity: 0, y: -6 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -6 }}
-                  className="absolute right-0 mt-3 w-[240px] bg-white shadow-xl rounded-xl border border-gray-100 p-4 grid gap-3"
+                  className="absolute right-0 mt-3 w-[220px] bg-white shadow-xl rounded-xl border border-gray-100 p-4 grid gap-3"
                 >
                   <Link className="hover:text-black" to="/catalogo/sofas">
-                    Sofás Premium
+                    Sofás
                   </Link>
                   <Link className="hover:text-black" to="/catalogo/sillas">
-                    Sillas Modernas
+                    Sillas
                   </Link>
                   <Link className="hover:text-black" to="/catalogo/mesas">
-                    Mesas Elegantes
+                    Mesas
                   </Link>
                   <Link className="hover:text-black" to="/catalogo/armarios">
                     Armarios
@@ -104,22 +98,43 @@ export default function Header() {
         {/* BOTÓN MOBILE */}
         <button
           className="md:hidden text-gray-700"
-          onClick={() => setMenuOpen(!menuOpen)}
+          onClick={() => setMenuOpen(true)}
         >
-          {menuOpen ? <X size={28} /> : <Menu size={28} />}
+          <Menu size={28} />
         </button>
       </div>
 
-      {/* MENU MOBILE */}
+      {/* SIDEBAR MOBILE DESDE LA DERECHA */}
       <AnimatePresence>
         {menuOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="md:hidden bg-white border-t border-gray-200 shadow-xl px-6 py-4"
-          >
-            <ul className="flex flex-col gap-4 text-gray-700 font-medium">
+          <>
+            {/* Fondo borroso */}
+            <motion.div
+              key="backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.45 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMenuOpen(false)}
+              className="fixed inset-0 bg-black z-40"
+            />
+
+            {/* PANEL DESLIZANTE */}
+            <motion.div
+              key="sidebar"
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "tween", duration: 0.3 }}
+              className="fixed top-0 right-0 h-full w-[75%] max-w-[320px] bg-white shadow-xl z-50 p-6 flex flex-col gap-6"
+            >
+              {/* Cerrar */}
+              <button
+                className="self-end mb-4 text-gray-700"
+                onClick={() => setMenuOpen(false)}
+              >
+                <X size={28} />
+              </button>
+
               <Link to="/" onClick={() => setMenuOpen(false)}>
                 Home
               </Link>
@@ -134,7 +149,7 @@ export default function Header() {
                 Contacto
               </button>
 
-              {/* CATALOGO MOBILE (último) */}
+              {/* CATALOGO */}
               <div>
                 <button
                   onClick={() => setCatalogOpen(!catalogOpen)}
@@ -151,17 +166,17 @@ export default function Header() {
                       exit={{ opacity: 0, y: -6 }}
                       className="ml-3 mt-2 flex flex-col gap-3"
                     >
-                      <Link to="/catalogo/sofas">Sofás Premium</Link>
-                      <Link to="/catalogo/sillas">Sillas Modernas</Link>
-                      <Link to="/catalogo/mesas">Mesas Elegantes</Link>
+                      <Link to="/catalogo/sofas">Sofás</Link>
+                      <Link to="/catalogo/sillas">Sillas</Link>
+                      <Link to="/catalogo/mesas">Mesas</Link>
                       <Link to="/catalogo/armarios">Armarios</Link>
                       <Link to="/catalogo/decoracion">Decoración</Link>
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
-            </ul>
-          </motion.div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </header>
