@@ -3,21 +3,130 @@
     "id": 1,
     "nombre": "Sofá Escandinavo",
     "precio": 320000,
-    "imagen": "/images/sofa1.jpg",
-    "descripcion": "Sofá de diseño nórdico con tela anti-manchas."
+    "color": "Gris Claro",
+    "medidas": "220cm x 90cm x 85cm",
+    "imagen": "/muebles/sofa-escandinavo.jpg",
+    "descripcion": "Sofá de diseño nórdico con tela anti-manchas y patas de madera clara.",
+    "categoria": "Sofás"
   },
   {
     "id": 2,
     "nombre": "Mesa de Centro Minimalista",
     "precio": 85000,
-    "imagen": "/images/mesa1.jpg",
-    "descripcion": "Madera maciza, estilo moderno y elegante."
+    "color": "Roble Natural",
+    "medidas": "110cm x 60cm x 40cm",
+    "imagen": "/muebles/mesa-de-centro.jpg",
+    "descripcion": "Mesa de centro fabricada en madera maciza, estilo moderno y elegante.",
+    "categoria": "Mesas"
   },
   {
     "id": 3,
     "nombre": "Silla Moderna Premium",
     "precio": 56000,
-    "imagen": "/images/silla1.jpg",
-    "descripcion": "Silla de diseño ergonómico y materiales de calidad."
+    "color": "Blanco",
+    "medidas": "85cm x 45cm x 45cm",
+    "imagen": "/muebles/silla-moderna.jpg",
+    "descripcion": "Silla ergonómica con curvatura lumbar y base reforzada.",
+    "categoria": "Sillas"
+  },
+  {
+    "id": 4,
+    "nombre": "Escritorio Industrial X",
+    "precio": 140000,
+    "color": "Madera Nogal",
+    "medidas": "140cm x 70cm x 75cm",
+    "imagen": "/muebles/escritorio-Industrial.jpg",
+    "descripcion": "Escritorio estilo industrial con estructura metálica negra.",
+    "categoria": "Escritorios"
+  },
+  {
+    "id": 5,
+    "nombre": "Sillón Relax Reclinable",
+    "precio": 270000,
+    "color": "Beige Arena",
+    "medidas": "95cm x 100cm x 105cm",
+    "imagen": "/muebles/sillon-reclianble.jpg",
+    "descripcion": "Sillón reclinable con espuma de alta densidad y tapizado suave.",
+    "categoria": "Sillones"
+  },
+  {
+    "id": 6,
+    "nombre": "Mesa Comedor Nordise",
+    "precio": 210000,
+    "color": "Madera Clara",
+    "medidas": "180cm x 90cm x 75cm",
+    "imagen": "/muebles/mesa-nordise.jpg",
+    "descripcion": "Mesa amplia para comedor estilo nórdico para 6-8 personas.",
+    "categoria": "Mesas"
+  },
+  {
+    "id": 7,
+    "nombre": "Silla Escandinava Madera",
+    "precio": 48000,
+    "color": "Natural",
+    "medidas": "80cm x 44cm x 42cm",
+    "imagen": "/muebles/silla-escandinava.jpg",
+    "descripcion": "Silla ligera y resistente hecha en madera maciza pulida.",
+    "categoria": "Sillas"
+  },
+  {
+    "id": 8,
+    "nombre": "Rack TV Moderno",
+    "precio": 115000,
+    "color": "Blanco Mate",
+    "medidas": "150cm x 40cm x 55cm",
+    "imagen": "/muebles/rack-moderno.jpg",
+    "descripcion": "Mueble de TV con puertas correderas y diseño minimalista.",
+    "categoria": "Racks / TV"
+  },
+  {
+    "id": 9,
+    "nombre": "Estantería de Madera Escalonada",
+    "precio": 89000,
+    "color": "Roble Oscuro",
+    "medidas": "160cm x 90cm x 30cm",
+    "imagen": "/muebles/estanteria-escalonada.jpg",
+    "descripcion": "Estantería moderna de múltiples niveles con estilo decorativo.",
+    "categoria": "Estanterías"
+  },
+  {
+    "id": 10,
+    "nombre": "Mesa de Luz Moderna",
+    "precio": 45000,
+    "color": "Blanco con Roble",
+    "medidas": "50cm x 40cm x 55cm",
+    "imagen": "/muebles/luz-moderna.jpg",
+    "descripcion": "Mesa de luz compacta con cajón y base de madera natural.",
+    "categoria": "Mesas de Luz"
+  },
+  {
+    "id": 11,
+    "nombre": "Butaca de Lectura Premium",
+    "precio": 195000,
+    "color": "Verde Oliva",
+    "medidas": "90cm x 80cm x 100cm",
+    "imagen": "/muebles/butaca-lectura.jpg",
+    "descripcion": "Butaca acolchada con respaldo curvo y patas de madera.",
+    "categoria": "Butacas"
+  },
+  {
+    "id": 12,
+    "nombre": "Mesa Ratona Japandi",
+    "precio": 78000,
+    "color": "Abedul Claro",
+    "medidas": "100cm x 50cm x 35cm",
+    "imagen": "/muebles/mesa-ratona.jpg",
+    "descripcion": "Mesa baja estilo japandi con terminaciones suaves y minimalistas.",
+    "categoria": "Mesas"
+  },
+  {
+    "id": 13,
+    "nombre": "Escritorio Compacto Zen",
+    "precio": 120000,
+    "color": "Blanco Mate",
+    "medidas": "120cm x 60cm x 75cm",
+    "imagen": "/muebles/escritorio-compacto.jpg",
+    "descripcion": "Escritorio pequeño perfecto para home office moderno.",
+    "categoria": "Escritorios"
   }
 ]

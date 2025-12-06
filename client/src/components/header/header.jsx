@@ -1,7 +1,9 @@
+// Header.jsx
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import productos from "../../products/catalogo.json";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -9,7 +11,8 @@ export default function Header() {
   const catalogRef = useRef(null);
   const navigate = useNavigate();
 
-  // Ir a contacto en Home
+  const categorias = ["Todas", ...new Set(productos.map((p) => p.categoria))];
+
   const goToContacto = () => {
     navigate("/");
     setTimeout(() => {
@@ -18,7 +21,6 @@ export default function Header() {
     }, 200);
   };
 
-  // Cerrar dropdown al click afuera
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (catalogRef.current && !catalogRef.current.contains(e.target)) {
@@ -50,6 +52,7 @@ export default function Header() {
           <Link to="/" className="hover:text-black transition">
             Home
           </Link>
+
           <button
             onClick={goToContacto}
             className="hover:text-black transition"
@@ -60,35 +63,32 @@ export default function Header() {
           {/* CATALOGO */}
           <div className="relative" ref={catalogRef}>
             <button
-              onClick={() => setCatalogOpen(!catalogOpen)}
+              onMouseEnter={() => setCatalogOpen(true)}
               className="flex items-center gap-1 hover:text-black transition"
             >
               Catálogo <ChevronDown size={18} />
             </button>
 
+            {/* DROPDOWN */}
             <AnimatePresence>
               {catalogOpen && (
                 <motion.div
+                  onMouseLeave={() => setCatalogOpen(false)}
                   initial={{ opacity: 0, y: -6 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -6 }}
                   className="absolute right-0 mt-3 w-[220px] bg-white shadow-xl rounded-xl border border-gray-100 p-4 grid gap-3"
                 >
-                  <Link className="hover:text-black" to="/catalogo/sofas">
-                    Sofás
-                  </Link>
-                  <Link className="hover:text-black" to="/catalogo/sillas">
-                    Sillas
-                  </Link>
-                  <Link className="hover:text-black" to="/catalogo/mesas">
-                    Mesas
-                  </Link>
-                  <Link className="hover:text-black" to="/catalogo/armarios">
-                    Armarios
-                  </Link>
-                  <Link className="hover:text-black" to="/catalogo/decoracion">
-                    Decoración
-                  </Link>
+                  {categorias.map((cat) => (
+                    <Link
+                      key={cat}
+                      className="hover:text-black"
+                      to={`/catalogo?categoria=${encodeURIComponent(cat)}`}
+                      onClick={() => setCatalogOpen(false)}
+                    >
+                      {cat}
+                    </Link>
+                  ))}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -104,11 +104,10 @@ export default function Header() {
         </button>
       </div>
 
-      {/* SIDEBAR MOBILE DESDE LA DERECHA */}
+      {/* SIDEBAR MOBILE */}
       <AnimatePresence>
         {menuOpen && (
           <>
-            {/* Fondo borroso */}
             <motion.div
               key="backdrop"
               initial={{ opacity: 0 }}
@@ -118,7 +117,6 @@ export default function Header() {
               className="fixed inset-0 bg-black z-40"
             />
 
-            {/* PANEL DESLIZANTE */}
             <motion.div
               key="sidebar"
               initial={{ x: "100%" }}
@@ -127,7 +125,6 @@ export default function Header() {
               transition={{ type: "tween", duration: 0.3 }}
               className="fixed top-0 right-0 h-full w-[75%] max-w-[320px] bg-white shadow-xl z-50 p-6 flex flex-col gap-6"
             >
-              {/* Cerrar */}
               <button
                 className="self-end mb-4 text-gray-700"
                 onClick={() => setMenuOpen(false)}
@@ -149,7 +146,7 @@ export default function Header() {
                 Contacto
               </button>
 
-              {/* CATALOGO */}
+              {/* CATALOGO MOBILE */}
               <div>
                 <button
                   onClick={() => setCatalogOpen(!catalogOpen)}
@@ -166,11 +163,15 @@ export default function Header() {
                       exit={{ opacity: 0, y: -6 }}
                       className="ml-3 mt-2 flex flex-col gap-3"
                     >
-                      <Link to="/catalogo/sofas">Sofás</Link>
-                      <Link to="/catalogo/sillas">Sillas</Link>
-                      <Link to="/catalogo/mesas">Mesas</Link>
-                      <Link to="/catalogo/armarios">Armarios</Link>
-                      <Link to="/catalogo/decoracion">Decoración</Link>
+                      {categorias.map((cat) => (
+                        <Link
+                          key={cat}
+                          to={`/catalogo?categoria=${encodeURIComponent(cat)}`}
+                          onClick={() => setMenuOpen(false)}
+                        >
+                          {cat}
+                        </Link>
+                      ))}
                     </motion.div>
                   )}
                 </AnimatePresence>
