@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "nombre": "Sofá Escandinavo",
+    "precio": 320000,
+    "imagen": "/images/sofa1.jpg",
+    "descripcion": "Sofá de diseño nórdico con tela anti-manchas."
+  },
+  {
+    "id": 2,
+    "nombre": "Mesa de Centro Minimalista",
+    "precio": 85000,
+    "imagen": "/images/mesa1.jpg",
+    "descripcion": "Madera maciza, estilo moderno y elegante."
+  },
+  {
+    "id": 3,
+    "nombre": "Silla Moderna Premium",
+    "precio": 56000,
+    "imagen": "/images/silla1.jpg",
+    "descripcion": "Silla de diseño ergonómico y materiales de calidad."
+  }
+]

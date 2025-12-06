@@ -1,13 +1,23 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [catalogOpen, setCatalogOpen] = useState(false);
 
   const catalogRef = useRef(null);
+  const navigate = useNavigate();
+
+  // Ir a sección contacto en Home
+  const goToContacto = () => {
+    navigate("/"); // ir al home
+    setTimeout(() => {
+      const target = document.getElementById("contacto");
+      if (target) target.scrollIntoView({ behavior: "smooth" });
+    }, 200);
+  };
 
   // Cerrar dropdown al hacer click fuera
   useEffect(() => {
@@ -24,8 +34,7 @@ export default function Header() {
   return (
     <header className="w-full bg-white shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
-
-        {/* LOGO + MARCA */}
+        {/* LOGO */}
         <Link to="/" className="flex items-center gap-2">
           <img
             src="/logo.png"
@@ -43,10 +52,18 @@ export default function Header() {
 
         {/* NAV DESKTOP */}
         <nav className="hidden md:flex items-center gap-8 text-gray-700 font-medium">
+          <Link to="/" className="hover:text-black transition">
+            Home
+          </Link>
 
-          <Link to="/" className="hover:text-black transition">Home</Link>
+          <button
+            onClick={goToContacto}
+            className="hover:text-black transition"
+          >
+            Contacto
+          </button>
 
-          {/* Dropdown por CLICK */}
+          {/* --- CATALOGO (AL FINAL) --- */}
           <div className="relative" ref={catalogRef}>
             <button
               onClick={() => setCatalogOpen(!catalogOpen)}
@@ -61,23 +78,30 @@ export default function Header() {
                   initial={{ opacity: 0, y: -6 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -6 }}
-                  className="absolute left-0 mt-3 w-[240px] bg-white shadow-xl rounded-xl border border-gray-100 p-4 grid gap-3"
+                  className="absolute right-0 mt-3 w-[240px] bg-white shadow-xl rounded-xl border border-gray-100 p-4 grid gap-3"
                 >
-                  <Link to="/catalogo/sofas" className="hover:text-black">Sofás Premium</Link>
-                  <Link to="/catalogo/sillas" className="hover:text-black">Sillas Modernas</Link>
-                  <Link to="/catalogo/mesas" className="hover:text-black">Mesas Elegantes</Link>
-                  <Link to="/catalogo/armarios" className="hover:text-black">Armarios</Link>
-                  <Link to="/catalogo/decoracion" className="hover:text-black">Decoración</Link>
+                  <Link className="hover:text-black" to="/catalogo/sofas">
+                    Sofás Premium
+                  </Link>
+                  <Link className="hover:text-black" to="/catalogo/sillas">
+                    Sillas Modernas
+                  </Link>
+                  <Link className="hover:text-black" to="/catalogo/mesas">
+                    Mesas Elegantes
+                  </Link>
+                  <Link className="hover:text-black" to="/catalogo/armarios">
+                    Armarios
+                  </Link>
+                  <Link className="hover:text-black" to="/catalogo/decoracion">
+                    Decoración
+                  </Link>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
-
-          <Link to="/nosotros" className="hover:text-black transition">Nosotros</Link>
-          <Link to="/contacto" className="hover:text-black transition">Contacto</Link>
         </nav>
 
-        {/* BOTÓN MENU MOBILE */}
+        {/* BOTÓN MOBILE */}
         <button
           className="md:hidden text-gray-700"
           onClick={() => setMenuOpen(!menuOpen)}
@@ -96,10 +120,21 @@ export default function Header() {
             className="md:hidden bg-white border-t border-gray-200 shadow-xl px-6 py-4"
           >
             <ul className="flex flex-col gap-4 text-gray-700 font-medium">
+              <Link to="/" onClick={() => setMenuOpen(false)}>
+                Home
+              </Link>
 
-              <Link to="/" onClick={() => setMenuOpen(false)}>Home</Link>
+              <button
+                onClick={() => {
+                  setMenuOpen(false);
+                  goToContacto();
+                }}
+                className="text-left"
+              >
+                Contacto
+              </button>
 
-              {/* Dropdown mobile */}
+              {/* CATALOGO MOBILE (último) */}
               <div>
                 <button
                   onClick={() => setCatalogOpen(!catalogOpen)}
@@ -125,13 +160,6 @@ export default function Header() {
                   )}
                 </AnimatePresence>
               </div>
-
-              <Link to="/nosotros" onClick={() => setMenuOpen(false)}>
-                Nosotros
-              </Link>
-              <Link to="/contacto" onClick={() => setMenuOpen(false)}>
-                Contacto
-              </Link>
             </ul>
           </motion.div>
         )}
