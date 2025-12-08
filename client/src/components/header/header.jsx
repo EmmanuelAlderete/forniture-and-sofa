@@ -1,182 +1,243 @@
-// Header.jsx
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ChevronDown } from "lucide-react";
+import {
+  FiMenu,
+  FiX,
+  FiChevronDown,
+  FiChevronRight,
+  FiBox,
+  FiHome,
+  FiImage,
+  FiTag,
+} from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import productos from "../../products/catalogo.json";
 
 export default function Header() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [catalogOpen, setCatalogOpen] = useState(false);
-  const catalogRef = useRef(null);
+  const [device, setDevice] = useState("desktop");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
+  // Se asume que productos.map y set son válidos
   const categorias = ["Todas", ...new Set(productos.map((p) => p.categoria))];
+
+  // Cambio de color de íconos a un verde más oscuro
+  const icons = {
+    Todas: <FiBox className="w-4 h-4 text-green-700" />,
+    Sofás: <FiHome className="w-4 h-4 text-green-700" />,
+    Decoración: <FiImage className="w-4 h-4 text-green-700" />,
+    Packs: <FiTag className="w-4 h-4 text-green-700" />,
+  };
+
+  // Detectar dispositivo
+  useEffect(() => {
+    const detect = () => {
+      const w = window.innerWidth;
+      if (w < 768) setDevice("mobile");
+      else if (w < 1024) setDevice("tablet");
+      else setDevice("desktop");
+    };
+    detect();
+    window.addEventListener("resize", detect);
+    return () => window.removeEventListener("resize", detect);
+  }, []);
 
   const goToContacto = () => {
     navigate("/");
     setTimeout(() => {
-      const target = document.getElementById("contacto");
-      if (target) target.scrollIntoView({ behavior: "smooth" });
+      document
+        .getElementById("contacto")
+        ?.scrollIntoView({ behavior: "smooth" });
     }, 200);
   };
 
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (catalogRef.current && !catalogRef.current.contains(e.target)) {
-        setCatalogOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  // --------------------------
+  // ANIMACIONES MOBILE (right → left)
+  // --------------------------
+  const sidebarVariants = {
+    closed: { x: "100%" },
+    open: {
+      x: 0,
+      transition: { type: "spring", stiffness: 260, damping: 30 },
+    },
+  };
 
   return (
-    <header className="w-full bg-white shadow-md sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
+    // CAMBIO DE FONDO: bg-gray-50 para un blanco no tan luminoso
+    <header className="w-full bg-gray-50 shadow-xl sticky top-0 z-50 border-b border-gray-100">
+      <div className="max-w-8xl mx-auto px-5 py-4 flex items-center justify-between">
         {/* LOGO */}
-        <Link to="/" className="flex items-center gap-2">
-          <img
-            src="/logo.png"
-            alt="logo"
-            className="w-14 h-14 object-cover rounded-full shadow-sm"
-          />
-          <h1 className="text-xl font-semibold text-gray-800 tracking-tight">
-            Forniture & Sofa
-          </h1>
+        <Link to="/" className="flex items-center gap-3">
+          <img src="/logo.png" className="w-10 h-10 rounded-full shadow-lg" />
+          <div>
+            <h1 className="text-xl md:text-2xl font-extrabold text-gray-900">
+              Forniture<span className="text-green-700">&</span>Sofa
+            </h1>
+            <p className="text-xs text-gray-500 -mt-1 font-medium">
+              Muebles y diseño
+            </p>
+          </div>
         </Link>
 
-        {/* NAV DESKTOP */}
-        <nav className="hidden md:flex items-center gap-8 text-gray-700 font-medium">
-          <Link to="/" className="hover:text-black transition">
+        {/* NAV DESKTOP (Incluye Catálogo Dropdown) */}
+        <nav className="hidden md:flex items-center me-30 gap-5 text-gray-600 font-medium">
+          <Link
+            to="/"
+            className="px-2 py-2 hover:text-green-700 transition duration-150"
+          >
             Home
           </Link>
 
           <button
             onClick={goToContacto}
-            className="hover:text-black transition"
+            className="px-2 py-2 hover:text-green-700 transition duration-150"
           >
             Contacto
           </button>
 
-          {/* CATALOGO */}
-          <div className="relative" ref={catalogRef}>
+          {/* CATALOGO (Dropdown) */}
+          <div className="relative flex items-center">
             <button
-              onMouseEnter={() => setCatalogOpen(true)}
-              className="flex items-center gap-1 hover:text-black transition"
+              onClick={() => setDropdownOpen((s) => !s)}
+              className={`flex items-center gap-1 px-2 py-2 rounded-lg transition duration-200 font-medium
+        ${
+          dropdownOpen
+            ? "bg-gray-100 text-green-700 shadow-sm"
+            : "hover:bg-gray-100 hover:text-green-700"
+        }
+      `}
             >
-              Catálogo <ChevronDown size={18} />
+              Catálogo
+              <FiChevronDown
+                className={`transition-transform duration-200 ${
+                  dropdownOpen ? "rotate-180" : "rotate-0"
+                }`}
+              />
             </button>
 
-            {/* DROPDOWN */}
             <AnimatePresence>
-              {catalogOpen && (
+              {dropdownOpen && (
                 <motion.div
-                  onMouseLeave={() => setCatalogOpen(false)}
-                  initial={{ opacity: 0, y: -6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  className="absolute right-0 mt-3 w-[220px] bg-white shadow-xl rounded-xl border border-gray-100 p-4 grid gap-3"
+                  initial={{ opacity: 0, y: -8, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -8, scale: 0.98 }}
+                  className="absolute left-1/2 -translate-x-1/2 mt-6 w-[88vw] max-w-[850px]
+            bg-white mt-105 rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.08)]
+            border border-gray-400 p-5 z-50 backdrop-blur-sm"
                 >
-                  {categorias.map((cat) => (
-                    <Link
-                      key={cat}
-                      className="hover:text-black"
-                      to={`/catalogo?categoria=${encodeURIComponent(cat)}`}
-                      onClick={() => setCatalogOpen(false)}
-                    >
-                      {cat}
-                    </Link>
-                  ))}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                    {categorias.map((cat) => (
+                      <Link
+                        key={cat}
+                        to={`/catalogo?categoria=${encodeURIComponent(cat)}`}
+                        onClick={() => setDropdownOpen(false)}
+                        className="flex items-center gap-3 p-3 rounded-xl hover:bg-green-50 
+                  transition duration-150 group"
+                      >
+                        <div
+                          className="p-2.5 bg-white rounded-xl border border-gray-100 
+                    shadow-[0_2px_10px_rgba(0,0,0,0.04)]
+                    flex items-center justify-center"
+                        >
+                          {icons[cat] || <FiBox className="text-green-700" />}
+                        </div>
+
+                        <div className="flex flex-col">
+                          <span className="font-semibold text-gray-800 text-sm group-hover:text-green-700">
+                            {cat}
+                          </span>
+                          <span className="text-[11px] text-gray-500">
+                            Ver colección
+                          </span>
+                        </div>
+
+                        <FiChevronRight className="ml-auto text-gray-300 group-hover:text-green-700" />
+                      </Link>
+                    ))}
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
         </nav>
 
-        {/* BOTÓN MOBILE */}
-        <button
-          className="md:hidden text-gray-700"
-          onClick={() => setMenuOpen(true)}
-        >
-          <Menu size={28} />
-        </button>
+        {/* BOTÓN MOBILE (Menú Hamburguesa) */}
+        <div className="flex items-center gap-3 text-gray-700">
+          <button
+            className="p-2 rounded-full bg-gray-100 md:hidden hover:bg-gray-200 transition duration-150"
+            onClick={() => setSidebarOpen(true)}
+          >
+            <FiMenu className="text-xl" />
+          </button>
+        </div>
       </div>
 
-      {/* SIDEBAR MOBILE */}
+      {/* ----------------------------- */}
+      {/* MOBILE – RIGHT SIDEBAR (Simplificado) */}
+      {/* ----------------------------- */}
+
       <AnimatePresence>
-        {menuOpen && (
+        {sidebarOpen && device === "mobile" && (
           <>
+            {/* BACKDROP */}
             <motion.div
-              key="backdrop"
+              className="fixed inset-0 bg-black/50 z-40"
               initial={{ opacity: 0 }}
-              animate={{ opacity: 0.45 }}
+              animate={{ opacity: 0.5 }}
               exit={{ opacity: 0 }}
-              onClick={() => setMenuOpen(false)}
-              className="fixed inset-0 bg-black z-40"
+              onClick={() => setSidebarOpen(false)}
             />
 
-            <motion.div
-              key="sidebar"
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "tween", duration: 0.3 }}
-              className="fixed top-0 right-0 h-full w-[75%] max-w-[320px] bg-white shadow-xl z-50 p-6 flex flex-col gap-6"
+            {/* SIDEBAR */}
+            <motion.aside
+              variants={sidebarVariants}
+              initial="closed"
+              animate="open"
+              exit="closed"
+              // El sidebar tiene un fondo blanco (bg-white) para contrastar con el fondo de la página simulado (bg-gray-50)
+              className="fixed top-0 right-0 h-full w-[80%]
+                                bg-white shadow-2xl z-50 p-6 overflow-y-auto"
             >
-              <button
-                className="self-end mb-4 text-gray-700"
-                onClick={() => setMenuOpen(false)}
-              >
-                <X size={28} />
-              </button>
-
-              <Link to="/" onClick={() => setMenuOpen(false)}>
-                Home
-              </Link>
-
-              <button
-                onClick={() => {
-                  setMenuOpen(false);
-                  goToContacto();
-                }}
-                className="text-left"
-              >
-                Contacto
-              </button>
-
-              {/* CATALOGO MOBILE */}
-              <div>
+              <div className="flex items-center justify-between mb-8 pb-3 border-b border-gray-100">
+                <h2 className="text-2xl font-bold text-gray-800">Menú</h2>
                 <button
-                  onClick={() => setCatalogOpen(!catalogOpen)}
-                  className="flex items-center justify-between w-full"
+                  onClick={() => setSidebarOpen(false)}
+                  className="p-1 rounded-full hover:bg-gray-100"
                 >
-                  Catálogo <ChevronDown size={18} />
+                  <FiX className="text-2xl" />
+                </button>
+              </div>
+
+              <nav className="flex flex-col gap-6 font-semibold text-gray-800">
+                <Link
+                  to="/"
+                  onClick={() => setSidebarOpen(false)}
+                  className="text-lg p-2 rounded-lg hover:bg-green-50 hover:text-green-700 transition"
+                >
+                  Home
+                </Link>
+
+                <button
+                  onClick={() => {
+                    setSidebarOpen(false);
+                    goToContacto();
+                  }}
+                  className="text-lg text-left p-2 rounded-lg hover:bg-green-50 hover:text-green-700 transition"
+                >
+                  Contacto
                 </button>
 
-                <AnimatePresence>
-                  {catalogOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -6 }}
-                      className="ml-3 mt-2 flex flex-col gap-3"
-                    >
-                      {categorias.map((cat) => (
-                        <Link
-                          key={cat}
-                          to={`/catalogo?categoria=${encodeURIComponent(cat)}`}
-                          onClick={() => setMenuOpen(false)}
-                        >
-                          {cat}
-                        </Link>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            </motion.div>
+                {/* ENLACE DIRECTO AL CATÁLOGO GENERAL (Sin Query Params para Móvil) */}
+                <Link
+                  to="/catalogo"
+                  onClick={() => setSidebarOpen(false)}
+                  className="text-lg p-2 rounded-lg hover:bg-green-50 hover:text-green-700 transition"
+                >
+                  Catálogo
+                </Link>
+              </nav>
+            </motion.aside>
           </>
         )}
       </AnimatePresence>
