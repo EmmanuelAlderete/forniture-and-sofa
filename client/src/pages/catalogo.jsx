@@ -1,4 +1,4 @@
-// Catalogo.jsx
+// pages/Catalogo.jsx
 import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Layout, ProductCard } from "../components/index.jsx";
@@ -6,7 +6,6 @@ import productos from "../products/catalogo.json";
 import { BiSearch, BiX, BiFilter } from "react-icons/bi";
 import { useLocation } from "react-router-dom";
 
-// Normalización
 function normalize(str = "") {
   return str
     .normalize("NFD")
@@ -29,52 +28,40 @@ export default function Catalogo() {
   const [categoriaActiva, setCategoriaActiva] = useState("Todas");
   const [openFilter, setOpenFilter] = useState(false);
 
-  // CATEGORÍAS DINÁMICAS
+  // CATEGORÍAS CORRECTAS DEL JSON REAL
   const categorias = useMemo(() => {
-    const c = new Set(productos.map((p) => p.categoria || "Otros"));
-    return ["Todas", ...c];
+    const setCat = new Set(productos.map((p) => p.categoria));
+    return ["Todas", ...setCat];
   }, []);
 
-  // ---- SYNC CATEGORÍA DESDE URL ----
   useEffect(() => {
     if (!categoriaURL) return;
-
     const match = categorias.find(
       (c) => normalize(c) === normalize(categoriaURL)
     );
-
     if (match) setCategoriaActiva(match);
   }, [categoriaURL, categorias]);
 
-  // ---- SYNC QUERY DESDE URL ----
   useEffect(() => {
-    if (queryURL) {
-      setQuery(queryURL);
-    }
+    if (queryURL) setQuery(queryURL);
   }, [queryURL]);
 
-  // ---- Debounce búsqueda ----
   useEffect(() => {
     const t = setTimeout(() => setDebouncedQuery(normalize(query)), 350);
     return () => clearTimeout(t);
   }, [query]);
 
-  // ---- FILTRO FINAL ----
+  // FILTRADO FINAL
   const productosFiltrados = useMemo(() => {
     return productos.filter((p) => {
-      const coincideBusqueda = (() => {
-        if (!debouncedQuery) return true;
-
-        const campos = [
-          normalize(p.nombre),
-          normalize(p.descripcion),
-          normalize(p.color),
-          normalize(p.medidas),
+      const coincideBusqueda =
+        !debouncedQuery ||
+        [
+          normalize(p.titulo),
+          normalize(p.descripcionCorta),
           normalize(p.categoria),
-        ];
-
-        return campos.some((campo) => campo.includes(debouncedQuery));
-      })();
+          normalize(p.colores?.[0]?.nombre || ""),
+        ].some((campo) => campo.includes(debouncedQuery));
 
       const coincideCategoria =
         categoriaActiva === "Todas" ||
@@ -87,8 +74,8 @@ export default function Catalogo() {
   return (
     <Layout>
       <section className="px-6 py-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[250px_1fr] gap-10">
-        {/* SIDEBAR DESKTOP */}
-        <aside className="hidden md:block border-r pr-6">
+        {/* SIDEBAR */}
+        <aside className="hidden md:block border-r border-gray-100 pr-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">
             Categorías
           </h3>
@@ -101,8 +88,8 @@ export default function Catalogo() {
                   className={`w-full text-left px-4 py-2 rounded-lg text-sm font-medium transition
                     ${
                       categoriaActiva === cat
-                        ? "bg-indigo-600 text-white shadow-sm"
-                        : "text-gray-700 hover:bg-gray-100"
+                        ? "bg-green-700 text-white shadow-md"
+                        : "text-gray-700 hover:bg-green-50"
                     }`}
                 >
                   {cat}
@@ -112,9 +99,8 @@ export default function Catalogo() {
           </ul>
         </aside>
 
-        {/* MAIN CONTENT */}
+        {/* MAIN */}
         <div>
-          {/* HEADER */}
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8">
             <motion.h2
               initial={{ opacity: 0, y: 6 }}
@@ -125,17 +111,17 @@ export default function Catalogo() {
               Catálogo
             </motion.h2>
 
-            <p className="text-sm text-gray-600 text-right md:text-left">
+            <p className="text-sm text-gray-600">
               {productosFiltrados.length} resultados
             </p>
           </div>
 
-          {/* SEARCH */}
+          {/* BUSCADOR */}
           <div className="flex items-center gap-3 mb-10">
             <div className="relative flex-1">
               <BiSearch
-                size={18}
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                size={18}
               />
 
               <input
@@ -145,22 +131,22 @@ export default function Catalogo() {
                 onChange={(e) => setQuery(e.target.value)}
                 className="w-full pl-10 pr-10 py-3 rounded-xl border border-gray-200 bg-white
                   text-gray-800 placeholder-gray-400 shadow-sm
-                  focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-100"
+                  focus:outline-none focus:border-green-600 focus:ring-1 focus:ring-green-100"
               />
 
               {query && (
                 <button
                   onClick={() => setQuery("")}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md hover:bg-gray-100"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md hover:bg-green-50"
                 >
-                  <BiX size={18} className="text-gray-500" />
+                  <BiX size={18} className="text-gray-600" />
                 </button>
               )}
             </div>
 
             <button
               onClick={() => setOpenFilter(true)}
-              className="md:hidden p-3 rounded-xl border bg-white shadow-sm hover:bg-gray-50"
+              className="md:hidden p-3 rounded-xl border bg-white shadow-sm hover:bg-green-50"
             >
               <BiFilter size={22} className="text-gray-700" />
             </button>
@@ -169,7 +155,7 @@ export default function Catalogo() {
           {/* GRID */}
           <motion.div
             layout
-            className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8"
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8 justify-items-center"
           >
             {productosFiltrados.length > 0 ? (
               productosFiltrados.map((item, i) => (
@@ -193,9 +179,10 @@ export default function Catalogo() {
                   No se encontraron resultados para{" "}
                   <span className="font-medium text-gray-800">"{query}"</span>
                 </p>
+
                 <button
                   onClick={() => setQuery("")}
-                  className="px-4 py-2 bg-gray-100 border rounded-lg text-sm hover:bg-gray-200"
+                  className="px-4 py-2 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700 hover:bg-green-100"
                 >
                   Limpiar búsqueda
                 </button>
@@ -222,18 +209,21 @@ export default function Catalogo() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "tween" }}
-              className="fixed right-0 top-0 h-full w-72 bg-white z-50 shadow-xl p-6 overflow-y-auto"
+              className="fixed right-0 top-0 h-full w-72 bg-white z-50 shadow-xl p-6 overflow-y-auto border-l border-gray-100"
             >
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-semibold text-gray-900">
                   Filtrar por categoría
                 </h3>
                 <button onClick={() => setOpenFilter(false)}>
-                  <BiX size={26} className="text-gray-600" />
+                  <BiX
+                    size={26}
+                    className="text-gray-700 hover:text-green-700"
+                  />
                 </button>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {categorias.map((cat) => (
                   <button
                     key={cat}
@@ -241,11 +231,11 @@ export default function Catalogo() {
                       setCategoriaActiva(cat);
                       setOpenFilter(false);
                     }}
-                    className={`w-full text-left px-4 py-2 rounded-lg text-sm transition 
+                    className={`w-full text-left px-4 py-2 rounded-lg text-sm font-medium transition
                       ${
                         categoriaActiva === cat
-                          ? "bg-indigo-600 text-white shadow"
-                          : "text-gray-700 bg-gray-100 hover:bg-gray-200"
+                          ? "bg-green-700 text-white shadow-md"
+                          : "text-gray-700 hover:bg-green-50"
                       }`}
                   >
                     {cat}
