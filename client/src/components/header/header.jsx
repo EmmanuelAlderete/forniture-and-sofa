@@ -103,13 +103,6 @@ export default function Header() {
             Home
           </Link>
 
-          <button
-            onClick={goToContacto}
-            className="px-2 py-2 hover:text-green-700 transition duration-150"
-          >
-            Contacto
-          </button>
-
           {/* CATALOGO (Dropdown) */}
           <div className="relative flex items-center">
             <button
@@ -231,16 +224,6 @@ export default function Header() {
                 >
                   Home
                 </Link>
-
-                <button
-                  onClick={() => {
-                    setSidebarOpen(false);
-                    goToContacto();
-                  }}
-                  className="text-lg text-left p-2 rounded-lg hover:bg-green-50 hover:text-green-700 transition"
-                >
-                  Contacto
-                </button>
 
                 {/* ENLACE DIRECTO AL CATÁLOGO GENERAL (Sin Query Params para Móvil) */}
                 <Link
