@@ -9,7 +9,7 @@ export default function EmailForm({ producto }) {
     email: "",
     telefono: "",
     ciudad: "",
-    nota: "",
+    nota: "", // 'nota' es el campo de mensaje
   });
 
   const [loading, setLoading] = useState(false);
@@ -32,37 +32,33 @@ export default function EmailForm({ producto }) {
 
     try {
       await emailjs.send(
-  "service_sn2mqqn",
-  "template_mr1fg2e",
-  {
-    nombre: form.nombre,
-    email: form.email,
-    telefono: form.telefono,
-    ciudad: form.ciudad,
-    nota: form.nota,
+        "service_sn2mqqn",
+        "template_mr1fg2e",
+        {
+          nombre: form.nombre,
+          email: form.email,
+          telefono: form.telefono,
+          ciudad: form.ciudad,
+          nota: form.nota,
 
-    producto_id: producto.id,
-    producto_nombre: producto.titulo,
-    producto_precio: producto.precio,
-    producto_color: producto.color,
-    producto_medidas: `
+          producto_id: producto.id,
+          producto_nombre: producto.titulo,
+          producto_precio: producto.precio,
+          producto_color: producto.color,
+          producto_medidas: `
       Alto: ${producto.medidas?.alto} cm
       Ancho: ${producto.medidas?.ancho} cm
       Profundidad: ${producto.medidas?.profundidad} cm
-    `,
-    producto_categoria: producto.categoria,
+     `,
+          producto_categoria: producto.categoria,
 
-    
-   producto_imagen:
-  producto.imagenes?.[0]
-    ? new URL(producto.imagenes[0], window.location.origin).href
-    : "",
-
-  },
-  "o_dMBJLFui2faWyBA"
-  );
-  console.log(window.location.origin + "/muebles/sofa-escandinavo.jpg");
-
+          producto_imagen: producto.imagenes?.[0]
+            ? new URL(producto.imagenes[0], window.location.origin).href
+            : "",
+        },
+        "o_dMBJLFui2faWyBA"
+      );
+      console.log(window.location.origin + "/muebles/sofa-escandinavo.jpg");
 
       setSent(true);
       setForm({ nombre: "", email: "", telefono: "", ciudad: "", nota: "" });
@@ -83,6 +79,7 @@ export default function EmailForm({ producto }) {
       className="mt-5 space-y-4 p-6 rounded-2xl border border-gray-200 bg-white/70 backdrop-blur-xl shadow-xl"
     >
       {/* Título elegante */}
+
       <h3 className="text-lg font-semibold text-gray-800">
         Consultar disponibilidad
       </h3>
@@ -90,20 +87,22 @@ export default function EmailForm({ producto }) {
         Completá tus datos y te contactaremos en breve.
       </p>
 
-      {/* Inputs */}
+      {/* Inputs (Nombre, Email, Teléfono, Ciudad) */}
       {["nombre", "email", "telefono", "ciudad"].map((field, i) => (
         <div key={i} className="relative">
           <input
             name={field}
+            // Se utiliza el atributo 'valid' para activar el estilo de la etiqueta flotante.
+            // Si hay un valor, se agrega el atributo 'data-valid' (solo para que funcione con peer-valid en Tailwind).
+            data-valid={!!form[field] ? "true" : undefined}
             type={field === "email" ? "email" : "text"}
             value={form[field]}
             onChange={handleChange}
             required={field === "nombre" || field === "email"}
-            className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white/50 backdrop-blur-md shadow-sm focus:ring-2 focus:ring-green-500 outline-none peer transition-all"
+            // Se agrega la clase 'peer-valid' basada en el atributo 'data-valid' para que funcione como :valid
+            className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white/50 backdrop-blur-md shadow-sm focus:ring-2 focus:ring-green-500 outline-none peer transition-all [&[data-valid='true']~label]:-top-2 [&[data-valid='true']~label]:text-xs [&[data-valid='true']~label]:text-green-600"
           />
-          <label
-            className="absolute left-4 top-3 text-gray-500 text-sm transition-all peer-focus:-top-2 peer-focus:text-xs peer-focus:text-green-600 peer-valid:-top-2 peer-valid:text-xs peer-valid:text-green-600 bg-white/70 px-1"
-          >
+          <label className="absolute left-4 top-3 text-gray-500 text-sm transition-all peer-focus:-top-2 peer-focus:text-xs peer-focus:text-green-600 bg-white/70 px-1">
             {field === "nombre"
               ? "Nombre completo"
               : field === "email"
@@ -115,18 +114,17 @@ export default function EmailForm({ producto }) {
         </div>
       ))}
 
-      {/* Nota */}
+      {/* Nota (Mensaje) - Ahora con el mismo estilo de label flotante */}
       <div className="relative">
         <textarea
           name="nota"
           rows={3}
           value={form.nota}
           onChange={handleChange}
-          className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white/50 backdrop-blur-md shadow-sm focus:ring-2 focus:ring-green-500 outline-none peer transition-all"
+          data-valid={!!form.nota ? "true" : undefined}
+          className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white/50 backdrop-blur-md shadow-sm focus:ring-2 focus:ring-green-500 outline-none peer transition-all [&[data-valid='true']~label]:-top-2 [&[data-valid='true']~label]:text-xs [&[data-valid='true']~label]:text-green-600"
         />
-        <label
-          className="absolute left-4 top-3 text-gray-500 text-sm transition-all peer-focus:-top-2 peer-focus:text-xs peer-focus:text-green-600 peer-valid:-top-2 peer-valid:text-xs peer-valid:text-green-600 bg-white/70 px-1"
-        >
+        <label className="absolute left-4 top-3 text-gray-500 text-sm transition-all peer-focus:-top-2 peer-focus:text-xs peer-focus:text-green-600 bg-white/70 px-1">
           Mensaje (opcional)
         </label>
       </div>

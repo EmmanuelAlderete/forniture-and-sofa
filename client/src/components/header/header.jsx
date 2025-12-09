@@ -12,6 +12,13 @@ import {
 } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import productos from "../../products/catalogo.json";
+import { MdOutlineChair } from "react-icons/md";
+import { RiArmchairFill, RiSofaLine } from "react-icons/ri";
+import { FaChair } from "react-icons/fa6";
+import { MdTableBar } from "react-icons/md";
+import { PiDeskFill } from "react-icons/pi";
+import { BsBookshelf } from "react-icons/bs";
+import { GiTable } from "react-icons/gi";
 
 export default function Header() {
   const [device, setDevice] = useState("desktop");
@@ -25,8 +32,15 @@ export default function Header() {
   // Cambio de color de íconos a un verde más oscuro
   const icons = {
     Todas: <FiBox className="w-4 h-4 text-green-700" />,
-    Sofás: <FiHome className="w-4 h-4 text-green-700" />,
+    Sofás: <RiSofaLine className="w-4 h-4 text-green-700" />,
+    Sillas: <FaChair className="w-4 h-4 text-green-700" />,
+    Butacas: <MdOutlineChair className="w-4 h-4 text-green-700" />,
+    Sillones: <RiArmchairFill className="w-4 h-4 text-green-700" />,
+    Mesas: <MdTableBar className="w-4 h-4 text-green-700" />,
     Decoración: <FiImage className="w-4 h-4 text-green-700" />,
+    Escritorios: <PiDeskFill className="w-4 h-4 text-green-700" />,
+    Estanterías: <BsBookshelf className="w-4 h-4 text-green-700" />,
+    MesasdeLuz: <GiTable className="w-4 h-4 text-green-700" />,
     Packs: <FiTag className="w-4 h-4 text-green-700" />,
   };
 
@@ -140,7 +154,7 @@ export default function Header() {
                     shadow-[0_2px_10px_rgba(0,0,0,0.04)]
                     flex items-center justify-center"
                         >
-                          {icons[cat] || <FiBox className="text-green-700" />}
+                          {icons[cat] || <GiTable className="text-green-700" />}
                         </div>
 
                         <div className="flex flex-col">
