@@ -72,7 +72,7 @@ export default function ProductoDetalle() {
     )
     .slice(0, 4);
 
-  const whatsappNumber = "5491132817330";
+  const whatsappNumber = "5491132797665";
   const whatsappLink = `https://wa.me/${whatsappNumber}?text=Hola!%20Estoy%20interesado%20en%20el%20producto%20${encodeURIComponent(
     producto.titulo || producto.nombre
   )}`;
